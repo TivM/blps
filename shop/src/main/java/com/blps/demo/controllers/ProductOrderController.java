@@ -8,6 +8,8 @@ import com.blps.demo.services.CartService;
 import com.blps.demo.services.OrderedItemService;
 import com.blps.demo.services.ProductOrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -21,6 +23,10 @@ public class ProductOrderController {
     private final ProductOrderService productOrderService;
     private final OrderedItemService orderedItemService;
     private final CartService cartService;
+    private final KafkaTemplate<String, ItemWithStatus> kafkaTemplate;
+
+    @Value("${application.kafka.topic.name}")
+    private String topicName;
 
     @PostMapping("/orders")
     public AddOrderResponse addOrder(@RequestBody AddOrderRequest addOrderRequest){
@@ -60,7 +66,9 @@ public class ProductOrderController {
                 var orderedItem = allItemsFromOrder.stream().filter(itm -> itm.getProduct().getId().equals(item.id())).findFirst().get();
                 orderedItem.setStatus(item.status());
                 orderedItemService.update(orderedItem);
-                resultItems.add(new ItemWithStatus(orderedItem.getProduct().getId(), orderedItem.getStatus()));
+                var itemWithStatus = new ItemWithStatus(orderedItem.getProduct().getId(), orderedItem.getStatus());
+                kafkaTemplate.send(topicName, itemWithStatus);
+                resultItems.add(itemWithStatus);
             }
         }
         return new ChangeProductOrderStatusResponse(resultItems);
@@ -78,5 +86,4 @@ public class ProductOrderController {
                 productOrder.getClient().getId(),
                 allItemsFromOrder.stream().map(product -> new ItemWithStatus(product.getId(), product.getStatus())).toList());
     }
-
 }

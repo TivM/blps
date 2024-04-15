@@ -1,4 +1,4 @@
-package com.blps.demo.entity.controllers.item;
+package com.notifier.demo.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

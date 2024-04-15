@@ -1,4 +1,4 @@
-package com.blps.demo.services.impl;
+package com.notifier.demo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

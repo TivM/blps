@@ -13,7 +13,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Entity
-@Table(name = "seller")
+@Table(name = "pickup_point_employee")
 @Accessors(chain = true)
 public class PickupPointEmployee{
     @Id
