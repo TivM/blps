@@ -1,6 +1,6 @@
 package com.notifier.demo.configuration;
 
-import com.notifier.demo.dto.ItemWithStatus;
+import com.notifier.demo.dto.ItemForKafka;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,22 +28,22 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(JsonDeserializer.TYPE_MAPPINGS, "ItemWithStatus:com.notifier.demo.dto.ItemWithStatus");
+        props.put(JsonDeserializer.TYPE_MAPPINGS, "ItemForKafka:com.notifier.demo.dto.ItemForKafka");
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         return props;
     }
 
     @Bean
-    public ConsumerFactory<String, ItemWithStatus> consumerFactory() {
+    public ConsumerFactory<String, ItemForKafka> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig());
     }
 
     @Bean
     public KafkaListenerContainerFactory<
-            ConcurrentMessageListenerContainer<String, ItemWithStatus>> factory (
-            ConsumerFactory<String, ItemWithStatus> consumerFactory
+            ConcurrentMessageListenerContainer<String, ItemForKafka>> factory (
+            ConsumerFactory<String, ItemForKafka> consumerFactory
     ){
-        ConcurrentKafkaListenerContainerFactory<String, ItemWithStatus> factory =
+        ConcurrentKafkaListenerContainerFactory<String, ItemForKafka> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;

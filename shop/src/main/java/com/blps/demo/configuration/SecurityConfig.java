@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 .requestMatchers("/orders/payment").hasRole(CLIENT.name())
                                 .requestMatchers("/orders/payment/**").hasRole(PICKUP_POINT_EMPLOYEE.name())
                                 .requestMatchers("/orders").hasRole(CLIENT.name())
-                                .requestMatchers(POST, "/orders/**").hasRole(PICKUP_POINT_EMPLOYEE.name())
+                                .requestMatchers(POST, "/orders/**").hasAnyRole(PICKUP_POINT_EMPLOYEE.name(), SELLER.name())
                                 .requestMatchers(GET, "/orders/**").hasAnyRole(CLIENT.name(),PICKUP_POINT_EMPLOYEE.name())
 
                                 .anyRequest()

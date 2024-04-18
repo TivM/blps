@@ -1,6 +1,7 @@
 package com.blps.demo.controllers;
 
 import com.blps.demo.entity.ProductOrder;
+import com.blps.demo.entity.controllers.item.ItemForKafka;
 import com.blps.demo.entity.controllers.item.ItemWithStatus;
 import com.blps.demo.entity.controllers.order.*;
 import com.blps.demo.exception.ResourceNotFoundException;
@@ -23,7 +24,7 @@ public class ProductOrderController {
     private final ProductOrderService productOrderService;
     private final OrderedItemService orderedItemService;
     private final CartService cartService;
-    private final KafkaTemplate<String, ItemWithStatus> kafkaTemplate;
+    private final KafkaTemplate<String, ItemForKafka> kafkaTemplate;
 
     @Value("${application.kafka.topic.name}")
     private String topicName;
@@ -67,7 +68,7 @@ public class ProductOrderController {
                 orderedItem.setStatus(item.status());
                 orderedItemService.update(orderedItem);
                 var itemWithStatus = new ItemWithStatus(orderedItem.getProduct().getId(), orderedItem.getStatus());
-                kafkaTemplate.send(topicName, itemWithStatus);
+                kafkaTemplate.send(topicName, new ItemForKafka(orderedItem));
                 resultItems.add(itemWithStatus);
             }
         }

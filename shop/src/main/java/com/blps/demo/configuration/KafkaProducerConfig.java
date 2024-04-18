@@ -1,6 +1,6 @@
 package com.blps.demo.configuration;
 
-import com.blps.demo.entity.controllers.item.ItemWithStatus;
+import com.blps.demo.entity.controllers.item.ItemForKafka;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,18 +25,18 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        props.put(JsonSerializer.TYPE_MAPPINGS, "ItemWithStatus:com.blps.demo.entity.controllers.item.ItemWithStatus");
+        props.put(JsonSerializer.TYPE_MAPPINGS, "ItemForKafka:com.blps.demo.entity.controllers.item.ItemForKafka");
         return props;
     }
 
     @Bean
-    public ProducerFactory<String, ItemWithStatus> producerFactory() {
+    public ProducerFactory<String, ItemForKafka> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, ItemWithStatus> kafkaTemplate(
-            ProducerFactory<String, ItemWithStatus> producerFactory
+    public KafkaTemplate<String, ItemForKafka> kafkaTemplate(
+            ProducerFactory<String, ItemForKafka> producerFactory
     ){
         return new KafkaTemplate<>(producerFactory);
     }
