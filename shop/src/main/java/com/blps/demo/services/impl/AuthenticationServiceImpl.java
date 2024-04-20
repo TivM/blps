@@ -13,13 +13,14 @@ import com.blps.demo.repository.UserRepository;
 import com.blps.demo.services.AuthenticationService;
 import com.blps.demo.services.JwtService;
 import com.blps.demo.user.Role;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+
 
 @Service
 @RequiredArgsConstructor
