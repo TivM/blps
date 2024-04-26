@@ -60,18 +60,9 @@ public class ProductOrderController {
 
         var allItemsFromOrder = new HashSet<>(orderedItemService.getByOrderId(productOrder.getId()));
         var existingIds = allItemsFromOrder.stream().map(item -> item.getProduct().getId()).collect(Collectors.toSet());
-        var resultItems = new ArrayList<ItemWithStatus>();
+        var resultItems = productOrderService.changeProductListStatus(changeProductOrderStatusRequest.items(), existingIds, allItemsFromOrder);
 
-        for (var item : changeProductOrderStatusRequest.items()) {
-            if (existingIds.contains(item.id())) {
-                var orderedItem = allItemsFromOrder.stream().filter(itm -> itm.getProduct().getId().equals(item.id())).findFirst().get();
-                orderedItem.setStatus(item.status());
-                orderedItemService.update(orderedItem);
-                var itemWithStatus = new ItemWithStatus(orderedItem.getProduct().getId(), orderedItem.getStatus());
-                kafkaTemplate.send(topicName, new ItemForKafka(orderedItem));
-                resultItems.add(itemWithStatus);
-            }
-        }
+        productOrderService.sendStatusesToKafka(changeProductOrderStatusRequest.items(), allItemsFromOrder);
         return new ChangeProductOrderStatusResponse(resultItems);
     }
 

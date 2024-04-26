@@ -3,9 +3,9 @@ package com.notifier.demo.services;
 import com.notifier.demo.dto.ItemForKafka;
 import com.notifier.demo.entity.Notification;
 import com.notifier.demo.repository.NotificationRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,9 +14,9 @@ public class UpdateStatusReceiver {
 
     private final NotificationRepository notificationRepository;
 
-    @Transactional
-    @KafkaListener(topics = "fuck-you", groupId = "user-group", containerFactory = "factory")
-    public void listener(ItemForKafka item){
+    @KafkaListener(topics = "blps-lab2-in", groupId = "user-group", containerFactory = "factory")
+    public void listener(ItemForKafka item, Acknowledgment acknowledgment) {
         notificationRepository.save(Notification.of(item));
+        acknowledgment.acknowledge();
     }
 }

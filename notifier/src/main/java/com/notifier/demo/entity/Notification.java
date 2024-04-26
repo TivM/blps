@@ -13,16 +13,13 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Notification {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    @EmbeddedId
+    private NotificationId notificationId;
 
-
-    @Column(name = "product_id", nullable = false)
+    @Column(name = "product_id", nullable = false, insertable=false, updatable=false)
     private Integer productId;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, insertable=false, updatable=false)
     private String status;
 
     @Column(name = "client_email", nullable = false)
@@ -42,6 +39,7 @@ public class Notification {
 
     public static Notification of(ItemForKafka itemForKafka) {
         return new Notification()
+                .setNotificationId(new NotificationId(itemForKafka.id(), itemForKafka.status()))
                 .setProductId(itemForKafka.id())
                 .setStatus(itemForKafka.status())
                 .setClientEmail(itemForKafka.clientEmail())
