@@ -16,7 +16,11 @@ public class UpdateStatusReceiver {
 
     @KafkaListener(topics = "blps-lab2-in", groupId = "user-group", containerFactory = "factory")
     public void listener(ItemForKafka item, Acknowledgment acknowledgment) {
-        notificationRepository.save(Notification.of(item));
+        Notification notification = Notification.of(item);
+        var notificationFromDB = notificationRepository.findById(notification.getNotificationId()).isPresent();
+        if (!notificationFromDB){
+            notificationRepository.save(notification);
+        }
         acknowledgment.acknowledge();
     }
 }
